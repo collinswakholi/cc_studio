@@ -1,16 +1,23 @@
-# Multi-stage Dockerfile for Color Correction Studio
-# Optimized for size and performance
+# ============================================================
+# Color Correction Studio - Multi-Stage Docker Build
+# ============================================================
+# Stage 1: Frontend Build (Node.js + Vite)
+# Stage 2: Python Backend Setup
+# Stage 3: Final Production Image (Nginx + Python)
+# ============================================================
 
-# Stage 1: Build Frontend
+# ============================================================
+# STAGE 1: Frontend Build
+# ============================================================
 FROM node:20-alpine AS frontend-builder
 
 WORKDIR /app/frontend
 
-# Copy package files for dependency caching
+# Copy package files
 COPY package*.json ./
 
-# Install dependencies with clean install
-RUN npm ci --only=production && npm cache clean --force
+# Install dependencies with clean install for reproducibility
+RUN npm ci --prefer-offline --no-audit
 
 # Copy frontend source
 COPY index.html ./
@@ -22,53 +29,100 @@ COPY src/ ./src/
 # Build production frontend
 RUN npm run build
 
-# Stage 2: Python Backend with OpenCV
-FROM python:3.11-slim AS backend
+# ============================================================
+# STAGE 2: Python Backend Setup
+# ============================================================
+FROM python:3.11-slim AS backend-builder
 
-WORKDIR /app
+WORKDIR /app/backend
 
 # Install system dependencies for OpenCV and image processing
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    libgl1-mesa-glx \
     libglib2.0-0 \
     libsm6 \
     libxext6 \
     libxrender-dev \
     libgomp1 \
-    libgl1-mesa-glx \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy backend requirements
-COPY backend/requirements.txt ./backend/
+COPY backend/requirements.txt ./
 
-# Install Python dependencies with optimizations
-RUN pip install --no-cache-dir -r backend/requirements.txt && \
-    pip install --no-cache-dir gunicorn gevent
+# Install Python dependencies
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
-# Copy backend source
+# ============================================================
+# STAGE 3: Final Production Image
+# ============================================================
+FROM python:3.11-slim
+
+LABEL maintainer="Collins <wcoln@yahoo.com>"
+LABEL description="Color Correction Studio - ML-based Image Color Correction Application"
+LABEL version="1.0.0"
+
+WORKDIR /app
+
+# Install runtime dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    libsm6 \
+    libxext6 \
+    libxrender-dev \
+    libgomp1 \
+    nginx \
+    supervisor \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy Python packages from builder
+COPY --from=backend-builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
+
+# Copy backend application
 COPY backend/ ./backend/
+RUN chmod +x backend/*.py
 
-# Copy built frontend from builder stage
-COPY --from=frontend-builder /app/frontend/dist ./frontend/dist
+# Copy built frontend from frontend-builder
+COPY --from=frontend-builder /app/frontend/dist /usr/share/nginx/html
 
 # Create necessary directories with proper permissions
-RUN mkdir -p uploads results models backend/uploads backend/results backend/models && \
-    chmod -R 755 uploads results models backend
+RUN mkdir -p /app/backend/uploads \
+    /app/backend/results \
+    /app/backend/models \
+    /app/logs \
+    /run/nginx && \
+    chmod -R 755 /app/backend && \
+    chmod -R 777 /app/backend/uploads \
+    /app/backend/results \
+    /app/backend/models \
+    /app/logs
 
-# Set environment variables
-ENV FLASK_ENV=production \
-    PYTHONUNBUFFERED=1 \
-    PORT=5000 \
-    FRONTEND_PORT=5173
+# Copy Nginx configuration
+COPY docker/nginx.conf /etc/nginx/nginx.conf
+
+# Copy Supervisor configuration
+COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# Environment variables
+ENV PYTHONUNBUFFERED=1
+ENV PORT=5000
+ENV MAX_WORKERS=4
+ENV REQUEST_TIMEOUT=300
+ENV UPLOAD_FOLDER=/app/backend/uploads
+ENV RESULTS_FOLDER=/app/backend/results
+ENV MODELS_FOLDER=/app/backend/models
+ENV ALLOWED_BASE_DIR=/app/backend
 
 # Expose ports
-EXPOSE 5000 5173
+# 80: Nginx (Frontend)
+# 5000: Flask Backend API
+EXPOSE 80 5000
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:5000/health').read()" || exit 1
+  CMD curl -f http://localhost:5000/api/health || exit 1
 
-# Create startup script
-COPY docker-entrypoint.sh /app/
-RUN chmod +x /app/docker-entrypoint.sh
-
-ENTRYPOINT ["/app/docker-entrypoint.sh"]
+# Start supervisor to manage both services
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]

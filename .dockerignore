@@ -1,77 +1,94 @@
-# Dependencies
+# Docker Ignore File for Color Correction Studio
+# Exclude unnecessary files from Docker build context
+
+# Node modules and dependencies
 node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 package-lock.json
 
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-env/
-venv/
-ENV/
-*.egg-info/
+# Build outputs
 dist/
+release/
 build/
 
-# IDE
+# Development files
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
 
-# OS
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# OS files
 .DS_Store
 Thumbs.db
 desktop.ini
-
-# Build outputs
-dist/
-release/
-out/
-
-# Logs
-*.log
-logs/
-
-# Uploads and results (runtime data)
-uploads/*
-!uploads/.gitkeep
-results/*
-!results/.gitkeep
-models/*
-!models/.gitkeep
-backend/uploads/*
-backend/results/*
-backend/models/*
-
-# Test files
-test_images/
-v5_backup/
 
 # Git
 .git/
 .gitignore
 .gitattributes
 
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Backend runtime data
+backend/uploads/*
+backend/results/*
+backend/models/*
+!backend/uploads/.gitkeep
+!backend/results/.gitkeep
+!backend/models/.gitkeep
+
+# Test files
+test_images/
+*.test.js
+*.spec.js
+
 # Documentation
 *.md
 !README.md
+docs/
 
-# Docker
-Dockerfile
-.dockerignore
-docker-compose*.yml
+# Backup folders
+v5_backup/
 
-# Electron specific
+# Electron build artifacts
 electron-main.js
 preload.js
 
-# Scripts
-start_app.*
-run-docker.*
+# Scripts not needed in Docker
+start_app.js
+start_app.bat
+start_app.ps1
+start_app.sh
+
+# Logs
+logs/
+*.log
+
+# IDE
+.vscode/
+.idea/
+
+# Docker files (don't include in context)
+docker-compose*.yml
+
+# CI/CD (included separately)
+.github/
+
+# Archives
+*.zip
+*.tar
+*.tar.gz
+*.rar

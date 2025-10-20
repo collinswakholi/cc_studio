@@ -607,8 +607,6 @@ def process_single_image_with_timeout(
 
 # API Routes
 
-# Health check endpoints (both /health and /api/health for compatibility)
-@app.route('/health', methods=['GET'])
 @app.route('/api/health', methods=['GET'])
 def health_check():
     """Health check endpoint"""
@@ -623,28 +621,6 @@ def health_check():
             'thread_safe': True
         }
     }), 200
-
-# Serve frontend static files (for Docker deployment)
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
-def serve_frontend(path):
-    """Serve frontend static files from dist folder"""
-    # Check if frontend dist folder exists (Docker deployment)
-    frontend_dist = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'frontend', 'dist')
-    
-    if os.path.exists(frontend_dist):
-        if path and os.path.exists(os.path.join(frontend_dist, path)):
-            return send_file(os.path.join(frontend_dist, path))
-        else:
-            # Serve index.html for SPA routing
-            return send_file(os.path.join(frontend_dist, 'index.html'))
-    else:
-        # Fallback response when frontend not built (development mode)
-        return jsonify({
-            'message': 'Frontend not built. In development, run: npm run dev',
-            'backend_status': 'running',
-            'api_docs': '/api/health'
-        }), 200
 
 @app.route('/api/settings/<step>', methods=['GET', 'POST'])
 def handle_settings(step: str):

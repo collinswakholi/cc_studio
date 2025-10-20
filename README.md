@@ -1,214 +1,231 @@
-# 🎨 Color Correction Studio
+# Color Correction Studio
 
-A professional image color correction tool with ML-based algorithms, packaged as a Docker container for easy deployment.
+![Version](https://img.shields.io/badge/version-4.0.0-blue.svg)
+![Docker](https://img.shields.io/docker/automated/collins137/color-correction-studio)
+![License](https://img.shields.io/badge/license-MIT-green.svg)
 
-![Version](https://img.shields.io/badge/version-4.0.0-blue)
-![Docker](https://img.shields.io/badge/docker-ready-brightgreen)
-![License](https://img.shields.io/badge/license-MIT-green)
+A professional image color correction tool powered by ML algorithms, featuring a modern React frontend and Python Flask backend.
 
-## 🚀 Quick Start
+## 🎨 Features
 
-### Run with Docker (Easiest)
+- **Advanced Color Correction**: ML-based color correction using multiple algorithms
+- **Flat Field Correction (FFC)**: Remove vignetting and lens artifacts
+- **Gamma Correction (GC)**: Adjust image brightness and contrast
+- **White Balance (WB)**: Automatic and manual white balance correction
+- **Color Chart Detection**: Automatic detection and analysis of color charts
+- **Batch Processing**: Process multiple images with parallel computing
+- **Real-time Preview**: Interactive image preview with before/after comparison
+- **Delta E Metrics**: Quantify color correction accuracy
+- **Model Management**: Save and reuse trained color correction models
 
-**Windows:**
-```powershell
-.\run-docker.bat
-```
-
-**Linux/macOS:**
-```bash
-chmod +x run-docker.sh
-./run-docker.sh
-```
-
-The script will automatically:
-- Pull the image from Docker Hub (or build locally)
-- Start the container
-- Open http://localhost:5000 in your browser
+## 🚀 Quick Start with Docker
 
 ### Pull from Docker Hub
 
 ```bash
 docker pull collins137/color-correction-studio:latest
-docker run -d -p 5000:5000 --name color-correction collins137/color-correction-studio:latest
 ```
 
-## 📋 Features
+### Run with Docker
 
-- ✅ Advanced color correction algorithms
-- ✅ ML-based image processing
-- ✅ Batch processing support
-- ✅ Real-time preview
-- ✅ Multiple correction methods (FFC, GC, WB, CC)
-- ✅ GPU acceleration support
-- ✅ Docker containerized
-- ✅ Production-ready with Gunicorn
+```bash
+docker run -d \
+  --name color-correction-studio \
+  -p 8080:80 \
+  -p 5000:5000 \
+  -v color-correction-data:/app/backend/uploads \
+  collins137/color-correction-studio:latest
+```
+
+Access the application at: http://localhost:8080
+
+### Run with Docker Compose
+
+```bash
+docker-compose up -d
+```
+
+## 📦 Installation (Development)
+
+### Prerequisites
+
+- Node.js 18+ 
+- Python 3.11+
+- npm or yarn
+
+### Frontend Setup
+
+```bash
+npm install
+npm run dev
+```
+
+### Backend Setup
+
+```bash
+cd backend
+pip install -r requirements.txt
+python server_enhanced.py
+```
 
 ## 🏗️ Architecture
 
-- **Frontend**: React + Vite + TailwindCSS
-- **Backend**: Flask + OpenCV + ML models
-- **Server**: Gunicorn with gevent workers
-- **Containerization**: Multi-stage Docker build
-
-## 📦 Installation
-
-### Option 1: Docker (Recommended)
-
-See [Quick Start](#-quick-start) above.
-
-### Option 2: Local Development
-
-#### Prerequisites
-- Node.js 18+
-- Python 3.11+
-- Git
-
-#### Setup
-```bash
-# Install frontend dependencies
-npm install
-
-# Install backend dependencies
-cd backend
-pip install -r requirements.txt
-cd ..
-
-# Start application
-npm start
 ```
-
-Access at: http://localhost:5173 (frontend) and http://localhost:5000 (backend)
-
-## 🐳 Docker Documentation
-
-- [QUICKSTART.md](QUICKSTART.md) - Quick start guide
-- [DOCKER.md](DOCKER.md) - Comprehensive Docker documentation
-- [DOCKER_SETUP.md](DOCKER_SETUP.md) - Deployment summary
-- [DOCKER_CHEATSHEET.txt](DOCKER_CHEATSHEET.txt) - Command reference
+┌─────────────────────────────────────────────┐
+│           Nginx (Port 80)                   │
+│     Static Frontend (React + Vite)          │
+└─────────────────────────────────────────────┘
+                    ↓
+┌─────────────────────────────────────────────┐
+│      Flask Backend (Port 5000)              │
+│   ColorCorrectionPipeline (ML Engine)       │
+│   • OpenCV • NumPy • scikit-learn           │
+└─────────────────────────────────────────────┘
+                    ↓
+┌─────────────────────────────────────────────┐
+│        Data Persistence (Volumes)           │
+│  • Uploads • Results • Models • Logs        │
+└─────────────────────────────────────────────┘
+```
 
 ## 🔧 Configuration
 
 ### Environment Variables
 
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `PORT` | 5000 | Backend API port |
+| `MAX_WORKERS` | 4 | Parallel processing workers |
+| `REQUEST_TIMEOUT` | 300 | Request timeout (seconds) |
+
+### Docker Volumes
+
+- `/app/backend/uploads` - Uploaded images
+- `/app/backend/results` - Processed images
+- `/app/backend/models` - Trained models
+- `/app/logs` - Application logs
+
+## 🐳 Building Docker Image Locally
+
 ```bash
-PORT=5000                    # Backend port
-MAX_WORKERS=4               # Worker processes
-REQUEST_TIMEOUT=300         # Request timeout (seconds)
-UPLOAD_FOLDER=uploads       # Upload directory
-RESULTS_FOLDER=results      # Results directory
+docker build -t color-correction-studio .
+docker run -p 8080:80 -p 5000:5000 color-correction-studio
 ```
 
-### Docker Compose
+## 🔐 GitHub Actions CI/CD
+
+This project uses GitHub Actions for automated Docker image builds:
+
+1. **Create Docker Hub Access Token**:
+   - Go to https://hub.docker.com/settings/security
+   - Generate new access token
+
+2. **Configure GitHub Secrets**:
+   - Go to your repository → Settings → Secrets
+   - Add secret: `DOCKER_PASSWORD` (your Docker Hub token)
+
+3. **Automatic Builds**:
+   - Push to `main` branch → Builds `latest` tag
+   - Push tag `v*.*.*` → Builds version tag
+   - Pull requests → Test builds only
+
+## 📊 Usage
+
+### Basic Workflow
+
+1. **Load Images**: Upload images for color correction
+2. **Detect Chart**: Automatically detect color reference charts
+3. **Configure Pipeline**: Enable/disable correction steps (FFC, GC, WB, CC)
+4. **Run Correction**: Process single image or batch
+5. **Review Results**: View before/after, Delta E metrics, RGB scatter plots
+6. **Save Results**: Export corrected images and trained models
+
+### Batch Operations
+
+- **Apply to Others**: Apply trained model to multiple images
+- **Process All**: Train individual models for each image with color chart
+
+## 🔍 API Endpoints
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/health` | GET | Health check |
+| `/api/upload-images` | POST | Upload images |
+| `/api/detect-chart` | POST | Detect color chart |
+| `/api/run-cc` | POST | Run color correction |
+| `/api/apply-cc` | POST | Apply trained model |
+| `/api/save-images` | POST | Save results |
+| `/api/save-model` | POST | Save trained model |
+
+## 🧪 Testing Docker Image
 
 ```bash
-# Start services
-docker-compose up -d
+# Build
+docker build -t test-color-correction .
+
+# Run with health check
+docker run --rm -d --name test-app -p 8080:80 -p 5000:5000 test-color-correction
+
+# Check health
+docker inspect --format='{{.State.Health.Status}}' test-app
 
 # View logs
-docker-compose logs -f
+docker logs test-app
 
-# Stop services
-docker-compose down
+# Test API
+curl http://localhost:5000/api/health
+
+# Test Frontend
+curl http://localhost:8080
+
+# Cleanup
+docker stop test-app
 ```
-
-## 📖 API Documentation
-
-### Health Check
-```bash
-GET /health
-GET /api/health
-```
-
-### Upload Images
-```bash
-POST /api/upload
-Content-Type: multipart/form-data
-```
-
-### Process Images
-```bash
-POST /api/process
-Content-Type: application/json
-```
-
-## 🛠️ Development
-
-### Project Structure
-```
-├── backend/              # Flask backend
-│   ├── server_enhanced.py
-│   └── requirements.txt
-├── src/                  # React frontend
-│   ├── ColorCorrectionUI.jsx
-│   └── main.jsx
-├── Dockerfile           # Docker configuration
-├── docker-compose.yml   # Docker Compose
-└── package.json         # Node dependencies
-```
-
-### Build Frontend
-```bash
-npm run build
-```
-
-### Run Tests
-```bash
-npm test
-```
-
-## 🚢 Deployment
-
-### Deploy to Cloud
-
-The Docker image can be deployed to:
-- AWS ECS/Fargate
-- Google Cloud Run
-- Azure Container Instances
-- DigitalOcean App Platform
-- Any Docker-compatible platform
-
-### CI/CD
-
-GitHub Actions workflow is included for automatic Docker builds on push.
-
-## 📊 Performance
-
-- Multi-threaded processing
-- GPU acceleration (when available)
-- Efficient memory management
-- Optimized Docker image (~1.2GB)
 
 ## 🤝 Contributing
 
+Contributions welcome! Please:
+
 1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+2. Create feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit changes (`git commit -m 'Add amazing feature'`)
+4. Push to branch (`git push origin feature/amazing-feature`)
+5. Open Pull Request
 
 ## 📝 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+MIT License - see LICENSE file for details
+
+## 👨‍💻 Author
+
+**Collins**
+- GitHub: [@collins137](https://github.com/collins137)
+- Docker Hub: [collins137](https://hub.docker.com/u/collins137)
 
 ## 🙏 Acknowledgments
 
 - ColorCorrectionPipeline library
-- OpenCV community
-- React and Vite teams
+- React & Vite for frontend framework
+- Flask for backend API
+- OpenCV for image processing
+- Docker for containerization
 
-## 📧 Contact
+## 📚 Documentation
 
-Collins - [@collins137](https://github.com/collins137)
+For detailed documentation, see:
+- [Architecture Guide](./UI_ARCHITECTURE.md)
+- [Changelog](./CHANGELOG.md)
+- [Agent Guidelines](./Agents.MD)
 
-Project Link: [https://github.com/collins137/color-correction-studio](https://github.com/collins137/color-correction-studio)
+## 🐛 Issues & Support
 
-## 🔗 Links
+Found a bug? Have a question?
+- Open an issue: [GitHub Issues](https://github.com/collins137/color-correction-studio/issues)
+- Check existing issues before creating new ones
 
-- [Docker Hub](https://hub.docker.com/r/collins137/color-correction-studio)
-- [Documentation](DOCKER.md)
-- [Issues](https://github.com/collins137/color-correction-studio/issues)
+## 🔄 Updates
 
----
-
-Made with ❤️ by Collins + Copilot AI
+Stay updated:
+- Watch this repository for releases
+- Star ⭐ if you find it useful
+- Follow [@collins137](https://github.com/collins137)

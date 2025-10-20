@@ -2,44 +2,45 @@ version: '3.8'
 
 services:
   color-correction-studio:
-    image: color-correction-studio:latest
-    container_name: color-correction-studio
     build:
       context: .
       dockerfile: Dockerfile
+    image: collins137/color-correction-studio:latest
+    container_name: color-correction-studio
     ports:
+      - "8080:80"     # Frontend
       - "5000:5000"   # Backend API
-      - "5173:5173"   # Frontend (if served separately)
-    volumes:
-      # Persist uploads and results
-      - ./uploads:/app/uploads
-      - ./results:/app/results
-      - ./models:/app/models
-      # Backend data
-      - ./backend/uploads:/app/backend/uploads
-      - ./backend/results:/app/backend/results
-      - ./backend/models:/app/backend/models
     environment:
-      - FLASK_ENV=production
-      - PYTHONUNBUFFERED=1
       - PORT=5000
+      - MAX_WORKERS=4
+      - REQUEST_TIMEOUT=300
+      - PYTHONUNBUFFERED=1
+    volumes:
+      # Persist uploaded images and results
+      - color-correction-uploads:/app/backend/uploads
+      - color-correction-results:/app/backend/results
+      - color-correction-models:/app/backend/models
+      - color-correction-logs:/app/logs
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/health').read()"]
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/health"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
-    deploy:
-      resources:
-        limits:
-          cpus: '2'
-          memory: 4G
-        reservations:
-          cpus: '1'
-          memory: 2G
+    networks:
+      - color-correction-net
 
 volumes:
-  uploads:
-  results:
-  models:
+  color-correction-uploads:
+    driver: local
+  color-correction-results:
+    driver: local
+  color-correction-models:
+    driver: local
+  color-correction-logs:
+    driver: local
+
+networks:
+  color-correction-net:
+    driver: bridge
