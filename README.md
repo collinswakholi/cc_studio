@@ -1,7 +1,7 @@
 # Color Correction Studio
 
 ![Version](https://img.shields.io/badge/version-4.0.0-blue.svg)
-![Docker](https://img.shields.io/docker/automated/collins137/color-correction-studio)
+![Docker](https://img.shields.io/docker/automated/collins137/cc_studio)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
 A professional image color correction tool powered by ML algorithms, featuring a modern React frontend and Python Flask backend.
@@ -23,7 +23,7 @@ A professional image color correction tool powered by ML algorithms, featuring a
 ### Pull from Docker Hub
 
 ```bash
-docker pull collins137/color-correction-studio:latest
+docker pull collins137/cc_studio:latest
 ```
 
 ### Run with Docker
@@ -34,7 +34,7 @@ docker run -d \
   -p 8080:80 \
   -p 5000:5000 \
   -v color-correction-data:/app/backend/uploads \
-  collins137/color-correction-studio:latest
+  collins137/cc_studio:latest
 ```
 
 Access the application at: http://localhost:8080
@@ -220,7 +220,7 @@ For detailed documentation, see:
 ## 🐛 Issues & Support
 
 Found a bug? Have a question?
-- Open an issue: [GitHub Issues](https://github.com/collins137/color-correction-studio/issues)
+- Open an issue: [GitHub Issues](https://github.com/collinswakholi/cc_studio/issues)
 - Check existing issues before creating new ones
 
 ## 🔄 Updates

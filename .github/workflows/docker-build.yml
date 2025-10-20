@@ -16,7 +16,7 @@ on:
 
 env:
   DOCKER_USERNAME: collins137
-  IMAGE_NAME: collins137/color-correction-studio
+  IMAGE_NAME: collins137/cc_studio
 
 jobs:
   build-and-push:

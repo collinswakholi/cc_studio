@@ -59,7 +59,7 @@ gh repo create color-correction-studio --public --source=. --remote=origin --pus
 
 7. Link your local repo to GitHub:
 ```bash
-git remote add origin https://github.com/collins137/color-correction-studio.git
+git remote add origin https://github.com/collinswakholi/cc_studio.git
 git branch -M main
 git push -u origin main
 ```
@@ -101,8 +101,8 @@ Example token: `dckr_pat_abc123xyz...`
 ### Verify Setup
 
 You should now have:
-- ✅ GitHub repository: `https://github.com/collins137/color-correction-studio`
-- ✅ Docker Hub repository: `https://hub.docker.com/r/collins137/color-correction-studio`
+- ✅ GitHub repository: `https://github.com/collinswakholi/cc_studio`
+- ✅ Docker Hub repository: `https://hub.docker.com/r/collins137/cc_studio`
 - ✅ GitHub secret: `DOCKER_PASSWORD` configured
 
 ## Part 5: Test CI/CD Pipeline
@@ -125,7 +125,7 @@ git push origin main
 
 ### 3. Verify on Docker Hub
 
-1. Go to https://hub.docker.com/r/collins137/color-correction-studio
+1. Go to https://hub.docker.com/r/collins137/cc_studio
 2. Click **Tags** tab
 3. You should see:
    - `latest` tag (from main branch)
@@ -138,14 +138,14 @@ git push origin main
 
 ```bash
 # Pull the image from Docker Hub
-docker pull collins137/color-correction-studio:latest
+docker pull collins137/cc_studio:latest
 
 # Run the container
 docker run -d \
   --name test-color-correction \
   -p 8080:80 \
   -p 5000:5000 \
-  collins137/color-correction-studio:latest
+  collins137/cc_studio:latest
 
 # Wait 30 seconds for startup
 timeout 30
@@ -192,19 +192,19 @@ git push origin v4.0.0
 
 ```bash
 # Build the image
-docker build -t collins137/color-correction-studio:local .
+docker build -t collins137/cc_studio:local .
 
 # Test locally first
-docker run -d -p 8080:80 -p 5000:5000 collins137/color-correction-studio:local
+docker run -d -p 8080:80 -p 5000:5000 collins137/cc_studio:local
 
 # If test passes, tag as latest
-docker tag collins137/color-correction-studio:local collins137/color-correction-studio:latest
+docker tag collins137/cc_studio:local collins137/cc_studio:latest
 
 # Login to Docker Hub
 docker login -u collins137
 
 # Push to Docker Hub
-docker push collins137/color-correction-studio:latest
+docker push collins137/cc_studio:latest
 ```
 
 ### Multi-Architecture Build
@@ -216,7 +216,7 @@ docker buildx create --name multiarch --use
 # Build and push for multiple architectures
 docker buildx build \
   --platform linux/amd64,linux/arm64 \
-  -t collins137/color-correction-studio:latest \
+  -t collins137/cc_studio:latest \
   --push \
   .
 ```
@@ -237,7 +237,7 @@ npm install -g docker-hub-description
 docker-hub-description \
   --username collins137 \
   --password $DOCKER_PASSWORD \
-  --repository collins137/color-correction-studio \
+  --repository collins137/cc_studio \
   --readme README.md
 ```
 
@@ -245,10 +245,10 @@ docker-hub-description \
 
 ```bash
 # Check image size locally
-docker images collins137/color-correction-studio
+docker images collins137/cc_studio
 
 # View layers
-docker history collins137/color-correction-studio:latest
+docker history collins137/cc_studio:latest
 ```
 
 ## Troubleshooting
@@ -282,7 +282,7 @@ docker login -u collins137
 docker info | grep Username
 
 # Try push again
-docker push collins137/color-correction-studio:latest
+docker push collins137/cc_studio:latest
 ```
 
 ### Build Context Too Large
@@ -306,9 +306,9 @@ docker build --no-cache -t test .
 Add these to your README.md:
 
 ```markdown
-![Docker Image Size](https://img.shields.io/docker/image-size/collins137/color-correction-studio/latest)
-![Docker Pulls](https://img.shields.io/docker/pulls/collins137/color-correction-studio)
-![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/collins137/color-correction-studio/docker-build.yml)
+![Docker Image Size](https://img.shields.io/docker/image-size/collins137/cc_studio/latest)
+![Docker Pulls](https://img.shields.io/docker/pulls/collins137/cc_studio)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/collins137/cc_studio/docker-build.yml)
 ```
 
 ### Set Up Automated Security Scans
@@ -349,5 +349,5 @@ If you encounter issues:
 ---
 
 **Your repositories:**
-- GitHub: https://github.com/collins137/color-correction-studio
-- Docker Hub: https://hub.docker.com/r/collins137/color-correction-studio
+- GitHub: https://github.com/collinswakholi/cc_studio
+- Docker Hub: https://hub.docker.com/r/collins137/cc_studio

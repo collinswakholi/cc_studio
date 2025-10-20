@@ -146,7 +146,7 @@ docker-compose down            # Stop services
 ### Production (Docker Hub)
 ```bash
 # Pull from Docker Hub
-docker pull collins137/color-correction-studio:latest
+docker pull collins137/cc_studio:latest
 
 # Run production container
 docker run -d \
@@ -155,7 +155,7 @@ docker run -d \
   -p 5000:5000 \
   -v color-uploads:/app/backend/uploads \
   -v color-results:/app/backend/results \
-  collins137/color-correction-studio:latest
+  collins137/cc_studio:latest
 ```
 
 ## CI/CD Pipeline
@@ -178,10 +178,10 @@ docker run -d \
 7. Update Docker Hub description
 
 **Resulting Tags:**
-- `collins137/color-correction-studio:latest`
-- `collins137/color-correction-studio:main`
-- `collins137/color-correction-studio:v4.0.0` (if tagged)
-- `collins137/color-correction-studio:sha-abc123`
+- `collins137/cc_studio:latest`
+- `collins137/cc_studio:main`
+- `collins137/cc_studio:v4.0.0` (if tagged)
+- `collins137/cc_studio:sha-abc123`
 
 ## API Endpoints
 
@@ -282,7 +282,7 @@ python server_enhanced.py
 
 ### 4. Build Docker Image
 ```powershell
-docker build -t collins137/color-correction-studio:local .
+docker build -t collins137/cc_studio:local .
 ```
 
 ### 5. Test Docker Image
@@ -295,7 +295,7 @@ docker build -t collins137/color-correction-studio:local .
 git init
 git add .
 git commit -m "Initial commit"
-git remote add origin https://github.com/collins137/color-correction-studio.git
+git remote add origin https://github.com/collinswakholi/cc_studio.git
 git push -u origin main
 ```
 
@@ -310,7 +310,7 @@ git push -u origin main
 
 ### 9. Deploy
 ```powershell
-docker pull collins137/color-correction-studio:latest
+docker pull collins137/cc_studio:latest
 docker-compose up -d
 ```
 
@@ -437,9 +437,9 @@ docker stats color-correction-studio
 
 ## Resources
 
-- **GitHub Repo**: https://github.com/collins137/color-correction-studio
-- **Docker Hub**: https://hub.docker.com/r/collins137/color-correction-studio
-- **Issues**: https://github.com/collins137/color-correction-studio/issues
+- **GitHub Repo**: https://github.com/collinswakholi/cc_studio
+- **Docker Hub**: https://hub.docker.com/r/collins137/cc_studio
+- **Issues**: https://github.com/collinswakholi/cc_studio/issues
 - **Docker Docs**: https://docs.docker.com/
 - **GitHub Actions**: https://docs.github.com/en/actions
 

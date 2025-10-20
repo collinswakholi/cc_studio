@@ -130,7 +130,7 @@ function Initialize-Git {
     $remote = git remote get-url origin 2>$null
     if (!$remote) {
         Write-Info "Don't forget to add remote:"
-        Write-Host "  git remote add origin https://github.com/collins137/color-correction-studio.git" -ForegroundColor Yellow
+        Write-Host "  git remote add origin https://github.com/collinswakholi/cc_studio.git" -ForegroundColor Yellow
     } else {
         Write-Success "Remote origin: $remote"
     }
@@ -166,14 +166,14 @@ function Commit-Changes {
 function Build-DockerImage {
     Write-Step "Building Docker Image"
     
-    Write-Info "Building collins137/color-correction-studio:local..."
-    docker build -t collins137/color-correction-studio:local .
+    Write-Info "Building collins137/cc_studio:local..."
+    docker build -t collins137/cc_studio:local .
     
     if ($LASTEXITCODE -eq 0) {
         Write-Success "Docker image built successfully"
         
         # Show image info
-        $imageInfo = docker images collins137/color-correction-studio:local --format "Size: {{.Size}}"
+        $imageInfo = docker images collins137/cc_studio:local --format "Size: {{.Size}}"
         Write-Info $imageInfo
     } else {
         Write-ErrorMessage "Docker build failed"
@@ -196,7 +196,7 @@ function Test-DockerImage {
         --name $containerName `
         -p 8080:80 `
         -p 5000:5000 `
-        collins137/color-correction-studio:local
+        collins137/cc_studio:local
     
     Write-Info "Waiting for services to start (20 seconds)..."
     Start-Sleep -Seconds 20
@@ -303,7 +303,7 @@ try {
     Write-Host "2. Push to GitHub: git push origin main"
     Write-Host "3. Configure GitHub secret DOCKER_PASSWORD"
     Write-Host "4. Monitor GitHub Actions for automated builds"
-    Write-Host "5. Pull from Docker Hub: docker pull collins137/color-correction-studio:latest"
+    Write-Host "5. Pull from Docker Hub: docker pull collins137/cc_studio:latest"
     
     Write-Host "`nDocumentation:" -ForegroundColor Cyan
     Write-Host "  • README.md - Project overview"

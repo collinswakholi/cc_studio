@@ -12,7 +12,7 @@
 
 ```bash
 # Pull the latest image
-docker pull collins137/color-correction-studio:latest
+docker pull collins137/cc_studio:latest
 
 # Run the container
 docker run -d \
@@ -22,7 +22,7 @@ docker run -d \
   -v color-correction-uploads:/app/backend/uploads \
   -v color-correction-results:/app/backend/results \
   -v color-correction-models:/app/backend/models \
-  collins137/color-correction-studio:latest
+  collins137/cc_studio:latest
 
 # Access the application
 # Frontend: http://localhost:8080
@@ -33,7 +33,7 @@ docker run -d \
 
 ```bash
 # Clone the repository
-git clone https://github.com/collins137/color-correction-studio.git
+git clone https://github.com/collinswakholi/cc_studio.git
 cd color-correction-studio
 
 # Start services
@@ -52,7 +52,7 @@ docker-compose down
 
 ```bash
 # Clone repository
-git clone https://github.com/collins137/color-correction-studio.git
+git clone https://github.com/collinswakholi/cc_studio.git
 cd color-correction-studio
 
 # Build image
@@ -71,7 +71,7 @@ docker buildx create --name multiarch --use
 # Build for multiple platforms
 docker buildx build \
   --platform linux/amd64,linux/arm64 \
-  -t collins137/color-correction-studio:latest \
+  -t collins137/cc_studio:latest \
   --push \
   .
 ```
@@ -102,7 +102,7 @@ version: '3.8'
 
 services:
   app:
-    image: collins137/color-correction-studio:latest
+    image: collins137/cc_studio:latest
     ports:
       - "8080:80"
       - "5000:5000"
@@ -195,7 +195,7 @@ aws ecr get-login-password --region us-east-1 | \
   docker login --username AWS --password-stdin <account-id>.dkr.ecr.us-east-1.amazonaws.com
 
 # 3. Tag image
-docker tag collins137/color-correction-studio:latest \
+docker tag collins137/cc_studio:latest \
   <account-id>.dkr.ecr.us-east-1.amazonaws.com/color-correction-studio:latest
 
 # 4. Push to ECR
@@ -209,7 +209,7 @@ aws ecs create-service --cluster my-cluster --service-name color-correction --ta
 
 ```bash
 # 1. Tag for GCR
-docker tag collins137/color-correction-studio:latest \
+docker tag collins137/cc_studio:latest \
   gcr.io/PROJECT-ID/color-correction-studio
 
 # 2. Push to GCR
@@ -244,7 +244,7 @@ spec:
     spec:
       containers:
       - name: app
-        image: collins137/color-correction-studio:latest
+        image: collins137/cc_studio:latest
         ports:
         - containerPort: 80
         - containerPort: 5000
@@ -333,7 +333,7 @@ docker logs color-correction-studio
 docker inspect color-correction-studio
 
 # Try running interactively
-docker run -it --rm -p 8080:80 -p 5000:5000 collins137/color-correction-studio /bin/bash
+docker run -it --rm -p 8080:80 -p 5000:5000 collins137/cc_studio /bin/bash
 ```
 
 ### Backend not responding
@@ -407,7 +407,7 @@ docker run --rm -v color-correction-uploads:/data -v $(pwd):/backup \
 
 ```bash
 # Pull latest version
-docker pull collins137/color-correction-studio:latest
+docker pull collins137/cc_studio:latest
 
 # Restart with new version
 docker-compose pull
@@ -419,7 +419,7 @@ docker-compose up -d
 ```bash
 # Using Trivy
 docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
-  aquasec/trivy:latest image collins137/color-correction-studio:latest
+  aquasec/trivy:latest image collins137/cc_studio:latest
 ```
 
 ### Run as Non-Root (Future Enhancement)
@@ -436,7 +436,7 @@ Current implementation runs some services as root. Consider:
 ```yaml
 services:
   app:
-    image: collins137/color-correction-studio:latest
+    image: collins137/cc_studio:latest
     deploy:
       resources:
         limits:
@@ -463,4 +463,4 @@ docker-compose up -d --scale app=3
 
 - Documentation: README.md
 - Issues: GitHub Issues
-- Docker Hub: https://hub.docker.com/r/collins137/color-correction-studio
+- Docker Hub: https://hub.docker.com/r/collins137/cc_studio

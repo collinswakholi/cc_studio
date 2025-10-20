@@ -1,12 +1,12 @@
 version: '3.8'
 
 services:
-  color-correction-studio:
+  cc-studio:
     build:
       context: .
       dockerfile: Dockerfile
-    image: collins137/color-correction-studio:latest
-    container_name: color-correction-studio
+    image: collins137/cc_studio:latest
+    container_name: cc-studio
     ports:
       - "8080:80"     # Frontend
       - "5000:5000"   # Backend API
@@ -17,10 +17,10 @@ services:
       - PYTHONUNBUFFERED=1
     volumes:
       # Persist uploaded images and results
-      - color-correction-uploads:/app/backend/uploads
-      - color-correction-results:/app/backend/results
-      - color-correction-models:/app/backend/models
-      - color-correction-logs:/app/logs
+      - cc-studio-uploads:/app/backend/uploads
+      - cc-studio-results:/app/backend/results
+      - cc-studio-models:/app/backend/models
+      - cc-studio-logs:/app/logs
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5000/api/health"]
@@ -29,18 +29,18 @@ services:
       retries: 3
       start_period: 40s
     networks:
-      - color-correction-net
+      - cc-studio-net
 
 volumes:
-  color-correction-uploads:
+  cc-studio-uploads:
     driver: local
-  color-correction-results:
+  cc-studio-results:
     driver: local
-  color-correction-models:
+  cc-studio-models:
     driver: local
-  color-correction-logs:
+  cc-studio-logs:
     driver: local
 
 networks:
-  color-correction-net:
+  cc-studio-net:
     driver: bridge

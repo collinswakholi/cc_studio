@@ -97,7 +97,7 @@
 
 ### Build Docker Image
 ```powershell
-docker build -t collins137/color-correction-studio:test .
+docker build -t collins137/cc_studio:test .
 ```
 
 ### Test Docker Image
@@ -111,7 +111,7 @@ docker run -d \
   --name color-correction \
   -p 8080:80 \
   -p 5000:5000 \
-  collins137/color-correction-studio:test
+  collins137/cc_studio:test
 ```
 
 ### Run with Docker Compose
@@ -131,12 +131,12 @@ docker-compose up -d
 ### Phase 2: GitHub Setup
 - [ ] Create GitHub repository: `color-correction-studio`
 - [ ] Initialize Git: `git init`
-- [ ] Add remote: `git remote add origin https://github.com/collins137/color-correction-studio.git`
+- [ ] Add remote: `git remote add origin https://github.com/collinswakholi/cc_studio.git`
 - [ ] Commit files: `git add . && git commit -m "Initial commit"`
 - [ ] Push to GitHub: `git push -u origin main`
 
 ### Phase 3: Docker Hub Setup
-- [ ] Create Docker Hub repository: `collins137/color-correction-studio`
+- [ ] Create Docker Hub repository: `collins137/cc_studio`
 - [ ] Generate access token at https://hub.docker.com/settings/security
 - [ ] Save token securely
 
@@ -147,7 +147,7 @@ docker-compose up -d
 - [ ] Verify on Docker Hub: Check tags tab
 
 ### Phase 5: Production Deployment
-- [ ] Pull from Docker Hub: `docker pull collins137/color-correction-studio:latest`
+- [ ] Pull from Docker Hub: `docker pull collins137/cc_studio:latest`
 - [ ] Deploy with docker-compose
 - [ ] Verify application works
 - [ ] Set up monitoring/logging
@@ -248,7 +248,7 @@ docker rm test-app
 
 ### Expected Outcomes
 After successful build:
-- Image on Docker Hub: `collins137/color-correction-studio:latest`
+- Image on Docker Hub: `collins137/cc_studio:latest`
 - Multiple tags: `main`, `sha-abc123`, version tags
 - Updated Docker Hub description
 
@@ -361,7 +361,7 @@ See **DOCKER_DEPLOYMENT.md** for detailed instructions.
 
 - **Issues**: Open on GitHub
 - **Documentation**: Check docs/ folder
-- **Docker Hub**: https://hub.docker.com/r/collins137/color-correction-studio
+- **Docker Hub**: https://hub.docker.com/r/collins137/cc_studio
 
 ---
 

@@ -4,7 +4,7 @@
 $ErrorActionPreference = "Stop"
 
 # Configuration
-$IMAGE_NAME = "collins137/color-correction-studio"
+$IMAGE_NAME = "collins137/cc_studio"
 $CONTAINER_NAME = "color-correction-test"
 $FRONTEND_PORT = 8080
 $BACKEND_PORT = 5000
