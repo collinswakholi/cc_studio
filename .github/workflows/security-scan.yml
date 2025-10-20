@@ -12,6 +12,11 @@ on:
 env:
   IMAGE_NAME: collins137/cc_studio
 
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
 jobs:
   security-scan:
     runs-on: ubuntu-latest
