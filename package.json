@@ -1,0 +1,123 @@
+{
+  "name": "color-correction-studio",
+  "description": "Image color correction tool with ML-based algorithms",
+  "version": "4.0.0",
+  "type": "module",
+  "private": true,
+  "main": "electron-main.js",
+  "author": "Collins + Copilot AI",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "start": "node start_app.js",
+    "start:win": "powershell -ExecutionPolicy Bypass -File start_app.ps1",
+    "start:bat": "start_app.bat",
+    "start:unix": "bash start_app.sh",
+    "electron": "electron .",
+    "electron:dev": "concurrently \"npm run dev\" \"wait-on http://localhost:5173 && electron .\"",
+    "build:app": "npm run build && electron-builder",
+    "build:win": "npm run build && electron-builder --win",
+    "build:mac": "npm run build && electron-builder --mac",
+    "build:linux": "npm run build && electron-builder --linux",
+    "build:all": "npm run build && electron-builder -mwl",
+    "package:backend": "python -m PyInstaller backend_build.spec",
+    "clean": "rm -rf dist node_modules",
+    "lint": "echo 'Linting not configured yet'"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.20",
+    "concurrently": "^8.2.2",
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17",
+    "vite": "^6.0.7",
+    "wait-on": "^7.2.0"
+  },
+  "build": {
+    "appId": "com.colorcorrection.studio",
+    "productName": "Color Correction Studio",
+    "copyright": "Copyright © 2025 Color Correction Studio Team",
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    },
+    "files": [
+      "dist/**/*",
+      "electron-main.js",
+      "preload.js",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "backend/server_enhanced.exe",
+        "to": "backend/server_enhanced.exe",
+        "filter": ["**/*"]
+      },
+      {
+        "from": "backend",
+        "to": "backend",
+        "filter": ["*.py", "*.txt", "requirements.txt"]
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        },
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "build/icon.ico",
+      "requestedExecutionLevel": "asInvoker",
+      "signAndEditExecutable": false,
+      "artifactName": "${productName}-${version}-${os}-${arch}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Color Correction Studio"
+    },
+    "mac": {
+      "target": ["dmg", "zip"],
+      "category": "public.app-category.graphics-design",
+      "icon": "build/icon.icns",
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": null,
+      "entitlementsInherit": null,
+      "artifactName": "${productName}-${version}-${os}-${arch}.${ext}"
+    },
+    "linux": {
+      "target": ["AppImage", "deb", "rpm"],
+      "category": "Graphics",
+      "icon": "build/icon.png",
+      "artifactName": "${productName}-${version}-${os}-${arch}.${ext}"
+    },
+    "dmg": {
+      "contents": [
+        {
+          "x": 130,
+          "y": 220
+        },
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    }
+  }
+}

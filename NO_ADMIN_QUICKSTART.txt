@@ -1,0 +1,82 @@
+╔══════════════════════════════════════════════════════════════╗
+║  🚀 QUICK GUIDE: Publish Docker Image Without Admin Access   ║
+╚══════════════════════════════════════════════════════════════╝
+
+┌──────────────────────────────────────────────────────────────┐
+│ ⭐ RECOMMENDED: GitHub Actions (Free & Automated)             │
+└──────────────────────────────────────────────────────────────┘
+
+Step 1: Get Docker Hub Token
+   → https://hub.docker.com/settings/security
+   → Create Access Token (Read, Write, Delete)
+   → Copy the token
+
+Step 2: Add Token to GitHub
+   → Your Repo → Settings → Secrets and variables → Actions
+   → New repository secret
+   → Name: DOCKER_HUB_TOKEN
+   → Value: [paste token]
+
+Step 3: Push to GitHub
+   git add .
+   git commit -m "Add Docker files"
+   git push
+
+Step 4: Run Build
+   → GitHub → Actions tab → Docker Build and Push → Run workflow
+
+   Build takes ~15 minutes, fully automated!
+
+┌──────────────────────────────────────────────────────────────┐
+│ 🌐 ALTERNATIVE: Play with Docker (No Setup!)                 │
+└──────────────────────────────────────────────────────────────┘
+
+1. Go to: https://labs.play-with-docker.com/
+2. Login with Docker Hub
+3. Click "Start" → "+ ADD NEW INSTANCE"
+4. Run:
+   git clone [your-repo-url]
+   cd [repo-name]
+   docker login -u collins137
+   docker build -t collins137/color-correction-studio:latest .
+   docker push collins137/color-correction-studio:latest
+
+   Session lasts 4 hours - perfect for one-time build!
+
+┌──────────────────────────────────────────────────────────────┐
+│ 💻 ALTERNATIVE: GitHub Codespaces (120 hours/month free)     │
+└──────────────────────────────────────────────────────────────┘
+
+1. Your Repo → Code → Codespaces → Create codespace
+2. Wait for environment (~2 minutes)
+3. In terminal:
+   docker login -u collins137
+   docker build -t collins137/color-correction-studio:latest .
+   docker push collins137/color-correction-studio:latest
+
+┌──────────────────────────────────────────────────────────────┐
+│ 📦 After Publishing                                           │
+└──────────────────────────────────────────────────────────────┘
+
+Your image will be at:
+   https://hub.docker.com/r/collins137/color-correction-studio
+
+Anyone can run:
+   docker pull collins137/color-correction-studio:latest
+   docker run -d -p 5000:5000 collins137/color-correction-studio
+
+Or use the scripts:
+   .\run-docker.bat (Windows)
+   ./run-docker.sh (Linux/macOS)
+
+┌──────────────────────────────────────────────────────────────┐
+│ 💡 Which Method Should You Use?                              │
+└──────────────────────────────────────────────────────────────┐
+
+GitHub Actions:     Best for automatic builds on every commit
+Play with Docker:   Best for quick one-time build (easiest!)
+GitHub Codespaces:  Best if you need development environment
+
+╔══════════════════════════════════════════════════════════════╗
+║  EASIEST: Use Play with Docker - No setup, works instantly!  ║
+╚══════════════════════════════════════════════════════════════╝

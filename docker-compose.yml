@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  color-correction-studio:
+    image: color-correction-studio:latest
+    container_name: color-correction-studio
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"   # Backend API
+      - "5173:5173"   # Frontend (if served separately)
+    volumes:
+      # Persist uploads and results
+      - ./uploads:/app/uploads
+      - ./results:/app/results
+      - ./models:/app/models
+      # Backend data
+      - ./backend/uploads:/app/backend/uploads
+      - ./backend/results:/app/backend/results
+      - ./backend/models:/app/backend/models
+    environment:
+      - FLASK_ENV=production
+      - PYTHONUNBUFFERED=1
+      - PORT=5000
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/health').read()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+        reservations:
+          cpus: '1'
+          memory: 2G
+
+volumes:
+  uploads:
+  results:
+  models:
