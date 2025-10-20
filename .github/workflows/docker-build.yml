@@ -21,8 +21,19 @@ env:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform:
+          - linux/amd64
+          - linux/arm64
     
     steps:
+      - name: Prepare platform tag
+        id: platform
+        run: |
+          platform=${{ matrix.platform }}
+          echo "tag=${platform//\//-}" >> $GITHUB_OUTPUT
+          
       - name: Free up disk space
         run: |
           echo "Disk space before cleanup:"
@@ -69,16 +80,18 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          platforms: linux/amd64
+          cache-from: type=gha,scope=${{ steps.platform.outputs.tag }}
+          cache-to: type=gha,mode=max,scope=${{ steps.platform.outputs.tag }}
+          platforms: ${{ matrix.platform }}
           build-args: |
             BUILDKIT_INLINE_CACHE=1
+          provenance: false
           
       - name: Image digest
         run: echo ${{ steps.meta.outputs.digest }}
         
       - name: Update Docker Hub description
+        if: matrix.platform == 'linux/amd64'
         uses: peter-evans/dockerhub-description@v3
         with:
           username: ${{ env.DOCKER_USERNAME }}
